@@ -1,0 +1,19 @@
+First place the prSquash folder where you want it to be.
+for example: "C:/prSquash ".
+
+This folder is a good place to keep it, but it can be anywhere.
+
+Once you have the PerseusRigging folder where you want it to be,
+then just drag`n`drop the "install.mel" file into Maya (drop in any viewport)
+and make sure the perseus plugin is loaded in the plug-in manager.
+Reset Maya, and now it is ready to use.
+
+
+This will add the Perseus item to the Maya Menu and also perseus(.mll) to the plug-ins folder.
+
+
+Mohammad Jafarian
+contact@perseusrigging.com
+
+
+

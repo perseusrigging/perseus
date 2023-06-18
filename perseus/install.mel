@@ -1,0 +1,60 @@
+global proc installPerseus()
+{
+string $asInstallScriptLocation=`asInstallScriptLocation`;
+string $osTypeFile;
+string $operatingSystem = `about -os`;
+if ($operatingSystem=="linux") $operatingSystem="linux64";
+if ($operatingSystem=="win64") $osTypeFile="mll";
+if ($operatingSystem=="linux64") $osTypeFile="so";
+if ($operatingSystem=="mac") $osTypeFile="bundle";
+float $MayaVer=asMayaVersionAsFloat();
+string $versionAdd = `about -v`;
+
+
+string $srcWindows=$asInstallScriptLocation+"/plug-ins/"+$operatingSystem+"/"+$MayaVer+"/"+"perseus."+$osTypeFile;
+string $srcWindowsB=$asInstallScriptLocation+"/scripts/"+"AEprSquashTemplate.mel";
+string $version = `about -environmentFile`;
+string $verPath =`substring $version 1 (size($version)-8)`;
+string $destWindows=$verPath+"plug-ins/perseus."+$osTypeFile;
+string $destWindowsB=$verPath+"scripts/AEprSquashTemplate.mel";
+sysFile -makeDir ($verPath+"plug-ins");
+if (catch(`sysFile -delete $destWindows`)) print "";
+sysFile -copy $destWindows $srcWindows;
+sysFile -copy $destWindowsB $srcWindowsB;
+if (catch(`loadPlugin $destWindows`)) print "";
+if (catch(`pluginInfo -edit -autoload true perseus`)) print "";
+}
+global proc asInstallScriptLocator (){}
+
+global proc string asInstallScriptLocation ()
+{
+string $whatIs=`whatIs asInstallScriptLocator`;
+string $fullPath=`substring $whatIs 25 999`;
+string $buffer[];
+int $numTok=`tokenize $fullPath "/" $buffer`;
+int $numLetters=size($fullPath);
+int $numLettersLastFolder=size($buffer[$numTok-1]);
+string $scriptLocation=`substring $fullPath 1 ($numLetters-$numLettersLastFolder)`;
+return $scriptLocation;
+}
+
+global proc float asMayaVersionAsFloat ()
+{
+float $version=2012;
+if (`exists getApplicationVersionAsFloat`)
+	return `getApplicationVersionAsFloat`;
+string $versionString=`about -v`;
+string $tempString[];
+string $char;
+tokenize $versionString $tempString;
+//default to 2012, if versionString is not all numbers
+for ($i=0;$i<size($tempString[0]);$i++)
+	{
+	$char=`substring $tempString[0] ($i+1) ($i+1)`;
+	if (!`gmatch $char "[0-9]"`)
+		return 2012;
+	}
+$version=$tempString[0];
+return $version;
+}
+installPerseus;
