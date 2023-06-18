@@ -4,10 +4,10 @@ After installing Perseus Tools, an additional pull-down menu will be added to th
 prSquash  
 https://perseusrigging.com/prsquash/
 
-prVectorConstraint
+prVectorConstraint  
 https://perseusrigging.com/prvectorConstraint/
 
-prPairBlend
+prPairBlend  
 https://perseusrigging.com/prpairblend/
 
 
