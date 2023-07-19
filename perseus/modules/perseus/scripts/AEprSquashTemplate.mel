@@ -1,0 +1,24 @@
+global proc AEprSquashTemplate( string $nodeName )
+{
+    //editorTemplate -beginScrollLayout;
+    editorTemplate -beginLayout "Deformer Attributes" -collapse 0;
+            editorTemplate -addControl "envelope";
+editorTemplate -addControl "shrinkFactor";
+editorTemplate -addControl "expandFactor";
+editorTemplate -addControl "bendFactor";
+editorTemplate -addControl "twistFactor";
+editorTemplate -addControl "stretchBendWeight";
+editorTemplate -addControl "rampMem";
+editorTemplate -addControl "numTasks";
+editorTemplate -label "twist" -addDynamicControl "twist";
+//editorTemplate -label "angle" -addDynamicControl "angle";
+AEaddRampControl( $nodeName + ".deformerRamp" );
+AEaddRampControl( $nodeName + ".bendRamp" );
+AEaddRampControl( $nodeName + ".twistRamp" );
+AEaddRampControl( $nodeName + ".expandRamp" );
+AEaddRampControl( $nodeName + ".shrinkRamp" );
+AEaddRampControl( $nodeName + ".stretchRamp" );
+AEaddRampControl( $nodeName + ".squashRamp" );
+        editorTemplate -endLayout;
+collapse 0;
+}
