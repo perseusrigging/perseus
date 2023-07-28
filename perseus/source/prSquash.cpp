@@ -746,40 +746,39 @@ MStatus prSquash::deform(MDataBlock& dataBlock,
     MMatrix upLocRots = locatorWorldSpaceMat * localToWorldMat.inverse();
     upLocRots *= childMat.inverse();
     MMatrix upLocRotsInv = upLocRots.inverse();
-    MPointArray refPoints;
+    MPointArray points;
     unsigned int numPoint;
     MPointArray finalPoints;
-    geomIter.allPositions(refPoints);
+    geomIter.allPositions(points);
     int array = positionArrayDataHandle.elementCount();
-    numPoint = refPoints.length();
+    numPoint = points.length();
     i = 0;
     int currentCount = geomIter.count();
     MPoint tempPos;
-    if (array < 2 || array != currentCount)
-    {
-        refPointss_[multiIndex] = refPoints;
-        for (i == 0; i < numPoint; i++)
-        {
-            tempPos = refPointss_[multiIndex][i] * localToWorldMat;
-            stat = JumpToElement(positionArrayDataHandle, i);
-            positionArrayDataHandle.inputValue().set3Double(tempPos.x, tempPos.y, tempPos.z);
-        }
-    }
     finalPoints.setLength(numPoint);
     MPoint test = MPoint(0, 0, 0, 1);
-    float initialHeightVal=(test* localToWorldMat)[1];
-    for (i == 0; i < numPoint; i++)
+    float initialHeightVal = (test * localToWorldMat)[1];
+    if (array < 2 || array != currentCount)
     {
-        stat = JumpToElement(positionArrayDataHandle, i);
-        finalPoints[i] = positionArrayDataHandle.inputValue().asDouble3();
-        finalPoints[i].y += upLocRots[3][1]+ initialHeightVal;
+        for (i = 0; i < numPoint; i++)
+        {
+            tempPos = points[i] * localToWorldMat;
+            stat = JumpToElement(positionArrayDataHandle, i);
+            positionArrayDataHandle.inputValue().set3Double(tempPos.x, tempPos.y, tempPos.z);
+            finalPoints[i] = tempPos;
+            finalPoints[i].y += upLocRots[3][1] + initialHeightVal;
+        }
     }
-    //read all points
-    MPointArray points;
-    geomIter.allPositions(points);
-    int numPoints = points.length();
+    else
+    {
+        for (i = 0; i < numPoint; i++)
+        {
+            stat = JumpToElement(positionArrayDataHandle, i);
+            finalPoints[i] = positionArrayDataHandle.inputValue().asDouble3();
+            finalPoints[i].y += upLocRots[3][1] + initialHeightVal;
+        }
+    }
 
-    //pack data into a struct
     SharedData sharedData;
     sharedData.start = 0;
     sharedData.end = points.length() - 1;
@@ -1317,11 +1316,11 @@ MStatus prSquash::initialize()
     CHECK_ERROR(stat, "Unable to add locatorUpWorldSpace attribute\n");
     stat = attributeAffects(prSquash::locatorUpWorldSpace, prSquash::outputGeom);
 
-    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash weights");
-    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash expandMap");
-    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash shrinkMap");
-    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash stretchMap");
-    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash squashMap");
+    //MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash weights");
+    //MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash expandMap");
+    //MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash shrinkMap");
+    //MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash stretchMap");
+    //MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash squashMap");
     return stat;
 }
 

@@ -132,7 +132,7 @@ MStatus prVectorConstraint::compute(const MPlug& plug, MDataBlock& data)
         MTransformationMatrix localMTMatrix = startMTMatrix;
         MVector endVec = localMTMatrix.getTranslation(MSpace::kWorld);
         MAngle offsetVal = setRange(0.0, driverMinVal, driverMaxVal, minVal, maxVal);
-        MQuaternion eulerQuat = MQuaternion::MQuaternion(aimVector.normal(), endVec.normal(), 1.0);
+        MQuaternion eulerQuat = MQuaternion(aimVector.normal(), endVec.normal(), 1.0);
         MVector upVec = eulerQuat.asEulerRotation().asVector();
         MAngle aimVal = setRange(upVec[0], driverMinVal, driverMaxVal, minVal, maxVal);
         MAngle outputAngle;

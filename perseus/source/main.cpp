@@ -34,7 +34,7 @@ MStatus initializePlugin(MObject obj)
         MGlobal::displayError("Failed to register node: " + prSquash::GetTypeName() + "\n");
         return(status);
     }
-
+    
     status = fnPlugin.registerCommand(prSquashCmd::CommandName(),
         prSquashCmd::Creator,
         prSquashCmd::CreateSyntax);
@@ -43,6 +43,7 @@ MStatus initializePlugin(MObject obj)
         MGlobal::displayError("Failed to register command: " + prSquashCmd::CommandName());
         return(status);
     }
+    
 
     status = fnPlugin.registerNode(prVectorConstraint::GetTypeName(),
         prVectorConstraint::GetTypeId(),
@@ -174,6 +175,7 @@ MStatus initializePlugin(MObject obj)
     prSquashUrl += "string $prPairBlendUrl = \"system( \\\"start explorer /n,/e, http://www.perseusrigging.com//prpairblend\\\")\";";
     MGlobal::executeCommand(prSquashUrl, false, false);
 
+
     // Adding menus through C++ API to avoid having to include more complicated MEL/Python script setups for now
     MString addMenuStr = "global proc  prAbout(){confirmDialog -title \"Confirm\" -message \""+about+"\" - button \"Ok\";} global proc  prSkirtRig(){int $text;string $result = `promptDialog -title \"prVectorConstraint\" -message \"How many driver joints do you need ?\"\n -button \"OK\" -button \"Cancel\" -text 1 -defaultButton \"OK\" -cancelButton \"Cancel\" -dismissString \"Cancel\"`; if ($result == \"OK\") {$text = `promptDialog -query -text`;prVectorJntsOnCrv -d $text;}}";
     addMenuStr += "if(`menu -exists prRigTools`){deleteUI prRigTools;}menu -label \"prRigTools\"-parent MayaWindow prRigTools;menuItem -divider 1 -dividerLabel \"Deform\"; menuItem -label \"Squash Deformer\"-annotation \"Select object(s) to squash\"-command \"prSquash; \";menuItem -divider 1 -dividerLabel \"Vector Constraint\";menuItem -label \"Vector constraint\"-annotation \"Select a curve\"-command \"prSkirtRig(); \";     menuItem -divider 1 -dividerLabel \"Yaw,Pitch,Roll/pairBlend\";    menuItem -label \"pairBlend\"-annotation \"pr pairBlend->select one joint->add yaw / pitch / roll, Two joints->pairBlend\"-command \"prPairBlend; \";     menuItem -label \"addSupportJoints\"-annotation \"pr supportJnts->select one joint->add blend & support Joints\"-command \"prSupportJnts; \";     menuItem -label \"addSimpleSupportJoints\"-annotation \"pr simpleSupportJnts->select one joint->add blend & support Joints\"-command \"prSimpleSupportJnts; \";";
@@ -181,8 +183,13 @@ MStatus initializePlugin(MObject obj)
     addMenuStr += "menuItem -divider 1 ; menuItem -subMenu true -label \"Help\";menuItem -label \"prSquash Deformer\" -command $prSquashUrl;menuItem -label \"prVector Constraint\" -command $prVectorUrl;menuItem -label \"prPairBlend\" -command $prPairBlendUrl;";
     addMenuStr += "menuItem -label \"About\" -command \"prAbout();\";setParent - menu ..; ";
     addMenuStr += "setParent - menu prRigTools; menuSet - addMenu prRigTools modelingMenuSet; menuSet - addMenu prRigTools riggingMenuSet; menuSet - addMenu prRigTools animationMenuSet; ";
-
     MGlobal::executeCommand(addMenuStr, false, false);
+    // fix prSquash warning deformer
+    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash weights");
+    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash expandMap");
+    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash shrinkMap");
+    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash stretchMap");
+    MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer prSquash squashMap");
     return MS::kSuccess;
 }
 
@@ -267,13 +274,14 @@ MStatus uninitializePlugin(MObject obj)
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
 
-
+    
     status = fnPlugin.deregisterCommand(prSquashCmd::CommandName());
     if (!status)
     {
         MGlobal::displayError("Failed to deregister command: " + prSquashCmd::CommandName());
         return(status);
     }
+    
 
     status = fnPlugin.deregisterNode(prSquash::GetTypeId());
     if (!status)

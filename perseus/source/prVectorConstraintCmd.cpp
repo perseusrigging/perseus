@@ -95,12 +95,12 @@ MStatus prVectorConstraintCmd::doIt(const MArgList& args)
     nodeFn.setObject(mShapeObj);
     MObject child;
     child = MFnDagNode(selectedObjs[1]).child(0);
-    MFnDagNode childDag = MFnDagNode(selectedObjs[1]).child(0);
+    MFnDagNode childDag(child);
     MDagPath childPath = childDag.dagPath();
     MObject childB;
     MObject childC;
     childB = MFnDagNode(selectedObjs[0]).child(0);
-    MFnDagNode childBDag = MFnDagNode(selectedObjs[0]).child(0);
+    MFnDagNode childBDag(childB);
     MVector eyeAim = MVector(0.0, -1.0, 0.0);
     MVector eyeUp = MVector(1.0, 0.0, 0.0);
     MFnTransform transformFn;
@@ -194,7 +194,7 @@ MStatus prVectorConstraintCmd::doIt(const MArgList& args)
         cout << "parentObj " << parentObj.name() << endl;
         if (newJnt == false)
         {
-            MGlobal::executeCommand(MString("parent ") + parentObj.fullPathName() + MString(" ") + ppDag.fullPathName() + MString(" \;"), false, true);
+            MGlobal::executeCommand(MString("parent ") + parentObj.fullPathName() + MString(" ") + ppDag.fullPathName() + MString(";"), false, true);
         }
     }
     mDGModifier.doIt();
@@ -285,7 +285,7 @@ MStatus prVectorConstraintCmd::doIt(const MArgList& args)
 
     MVector drivenVec = MVector(txB, 0, tzB);
     MVector driverVec = MVector(0.0, 0.0, -1);
-    MQuaternion offsetQuat = MQuaternion::MQuaternion(driverVec.normal(), drivenVec.normal(), 1.0);
+    MQuaternion offsetQuat = MQuaternion(driverVec.normal(), drivenVec.normal(), 1.0);
     MVector offsetVec = offsetQuat.asEulerRotation().asVector();
     MPlug offsetRotYPlug = nodeFn.findPlug(MString("offsetRotateY"), false);
     mDagModifier.newPlugValueDouble(offsetRotYPlug, offsetVec[1]);

@@ -38,18 +38,17 @@
 #include <maya/MFnAnimCurve.h>
 #include <maya/MBoundingBox.h>
 #include <math.h>
-#include <omp.h>
 #include <algorithm>
 #include <maya/MAngle.h>
 #include <stdio.h>
 #include <map>
 #include <array>
 #include <maya/MThreadPool.h>
-#include <maya/MPxGPUDeformer.h>
-#include <maya/MEvaluationNode.h>
-#include <maya/MGPUDeformerRegistry.h>
-#include <maya/MOpenCLInfo.h>
-#include <clew/clew_cl.h>
+//#include <maya/MPxGPUDeformer.h>
+//#include <maya/MEvaluationNode.h>
+//#include <maya/MGPUDeformerRegistry.h>
+//#include <maya/MOpenCLInfo.h>
+//#include <clew/clew_cl.h>
 
 #define PI 3.14159265359
 
