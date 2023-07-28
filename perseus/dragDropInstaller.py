@@ -1164,7 +1164,7 @@ def onMayaDroppedPythonFile(*args, **kwargs):
 
 # ----------------------------------------------------------------------
 # License
-# Perseus version : 1.0.00
+# Perseus version : 1.0.2
 
 # Copyright(c) Mohammad Jafarian
 # Copyright(c) perseusrigging.com

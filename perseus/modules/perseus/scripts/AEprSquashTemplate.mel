@@ -20,5 +20,4 @@ AEaddRampControl( $nodeName + ".shrinkRamp" );
 AEaddRampControl( $nodeName + ".stretchRamp" );
 AEaddRampControl( $nodeName + ".squashRamp" );
         editorTemplate -endLayout;
-collapse 0;
 }

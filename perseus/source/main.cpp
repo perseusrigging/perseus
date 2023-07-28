@@ -15,7 +15,7 @@
 #include "prSimpleSupportJntsCmd.h"
 #include "prMirrorSupportJntsCmd.h"
 
-MString nodeVersion("1.0.1");
+MString nodeVersion("1.0.2");
 
 MStatus initializePlugin(MObject obj)
 {
@@ -149,7 +149,7 @@ MStatus initializePlugin(MObject obj)
         return(status);
     }
 
-    MString about = "Perseus version : 1.0.00\\n\\n";
+    MString about = "Perseus version : 1.0.2\\n\\n";
     about+="Copyright(c) Mohammad Jafarian\\n";
     about += "Copyright(c) perseusrigging.com\\n";
     about += "email : contact@perseusrigging.com\\n\\n";
