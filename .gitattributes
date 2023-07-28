@@ -1,0 +1,13 @@
+*              text=auto
+
+*.cpp          text eol=lf
+*.h            text eol=lf
+*.py           text eol=lf
+*.mel          text eol=lf
+*.mod          text eol=lf
+*.md           text eol=lf
+LICENSE        text eol=lf
+.gitignore     text eol=lf
+.gitattributes text eol=lf
+
+*.mll          binary
