@@ -14,6 +14,9 @@
 #include "prSimplePairBlendCmd.h"
 #include "prSimpleSupportJntsCmd.h"
 #include "prMirrorSupportJntsCmd.h"
+#include "prRopeRig.h"
+#include "prRopeRigCmd.h"
+
 
 MString nodeVersion("1.0.2");
 
@@ -23,18 +26,38 @@ MStatus initializePlugin(MObject obj)
 
     MFnPlugin fnPlugin(obj, "Mohammad Jafarian - www.perseusrigging.com", nodeVersion.asChar(), "Any");
 
+    status = fnPlugin.registerNode(prRopeRig::GetTypeName(),
+        prRopeRig::GetTypeId(),
+        prRopeRig::creator,
+        prRopeRig::initialize);
+    if (!status)
+    {
+        MGlobal::displayError("Failed to register node: " + prRopeRig::GetTypeName());
+        return(status);
+    }
+
+    status = fnPlugin.registerCommand(prRopeRigCmd::CommandName(),
+        prRopeRigCmd::Creator,
+        prRopeRigCmd::CreateSyntax);
+    if (!status)
+    {
+        MGlobal::displayError("Failed to register command: " + prRopeRigCmd::CommandName());
+        return(status);
+    }
+
+
     status = fnPlugin.registerNode(prSquash::GetTypeName(),
         prSquash::GetTypeId(),
         prSquash::creator,
         prSquash::initialize,
         MPxNode::kDeformerNode);
-    
+
     if (!status)
     {
         MGlobal::displayError("Failed to register node: " + prSquash::GetTypeName() + "\n");
         return(status);
     }
-    
+
     status = fnPlugin.registerCommand(prSquashCmd::CommandName(),
         prSquashCmd::Creator,
         prSquashCmd::CreateSyntax);
@@ -43,7 +66,7 @@ MStatus initializePlugin(MObject obj)
         MGlobal::displayError("Failed to register command: " + prSquashCmd::CommandName());
         return(status);
     }
-    
+
 
     status = fnPlugin.registerNode(prVectorConstraint::GetTypeName(),
         prVectorConstraint::GetTypeId(),
@@ -102,7 +125,7 @@ MStatus initializePlugin(MObject obj)
         MGlobal::displayError("Failed to register command: " + prVectorJntsOnCrvCmd::CommandName());
         return(status);
     }
-    
+
     status = fnPlugin.registerCommand(prSupportJntsCmd::CommandName(),
         prSupportJntsCmd::Creator,
         prSupportJntsCmd::CreateSyntax);
@@ -121,7 +144,7 @@ MStatus initializePlugin(MObject obj)
         MGlobal::displayError("Failed to register node: " + prSimplePairBlend::GetTypeName());
         return(status);
     }
-    
+
     status = fnPlugin.registerCommand(prSimplePairBlendCmd::CommandName(),
         prSimplePairBlendCmd::Creator,
         prSimplePairBlendCmd::CreateSyntax);
@@ -173,14 +196,16 @@ MStatus initializePlugin(MObject obj)
     MString prSquashUrl = "string $prSquashUrl = \"system( \\\"start explorer /n,/e, http://www.perseusrigging.com//prsquash\\\")\";";
     prSquashUrl += "string $prVectorUrl = \"system( \\\"start explorer /n,/e, http://www.perseusrigging.com//prvectorConstraint\\\")\";";
     prSquashUrl += "string $prPairBlendUrl = \"system( \\\"start explorer /n,/e, http://www.perseusrigging.com//prpairblend\\\")\";";
+    prSquashUrl += "string $prRopeRigUrl = \"system( \\\"start explorer /n,/e, http://www.perseusrigging.com//prroperig\\\")\";";
     MGlobal::executeCommand(prSquashUrl, false, false);
 
 
     // Adding menus through C++ API to avoid having to include more complicated MEL/Python script setups for now
     MString addMenuStr = "global proc  prAbout(){confirmDialog -title \"Confirm\" -message \""+about+"\" - button \"Ok\";} global proc  prSkirtRig(){int $text;string $result = `promptDialog -title \"prVectorConstraint\" -message \"How many driver joints do you need ?\"\n -button \"OK\" -button \"Cancel\" -text 1 -defaultButton \"OK\" -cancelButton \"Cancel\" -dismissString \"Cancel\"`; if ($result == \"OK\") {$text = `promptDialog -query -text`;prVectorJntsOnCrv -d $text;}}";
-    addMenuStr += "if(`menu -exists prRigTools`){deleteUI prRigTools;}menu -label \"prRigTools\"-parent MayaWindow prRigTools;menuItem -divider 1 -dividerLabel \"Deform\"; menuItem -label \"Squash Deformer\"-annotation \"Select object(s) to squash\"-command \"prSquash; \";menuItem -divider 1 -dividerLabel \"Vector Constraint\";menuItem -label \"Vector constraint\"-annotation \"Select a curve\"-command \"prSkirtRig(); \";     menuItem -divider 1 -dividerLabel \"Yaw,Pitch,Roll/pairBlend\";    menuItem -label \"pairBlend\"-annotation \"pr pairBlend->select one joint->add yaw / pitch / roll, Two joints->pairBlend\"-command \"prPairBlend; \";     menuItem -label \"addSupportJoints\"-annotation \"pr supportJnts->select one joint->add blend & support Joints\"-command \"prSupportJnts; \";     menuItem -label \"addSimpleSupportJoints\"-annotation \"pr simpleSupportJnts->select one joint->add blend & support Joints\"-command \"prSimpleSupportJnts; \";";
+    addMenuStr += "global proc  prRopeRigUI() {int $text; string $result = `promptDialog - title \"prRopeRig\" -message \"How many joints should be placed along the curve? ?\"\n -button \"OK\" -button \"Cancel\" -text 10 -defaultButton \"OK\" -cancelButton \"Cancel\" -dismissString \"Cancel\"`; if ($result == \"OK\") {$text = `promptDialog -query -text`;prRopeRig -d $text;}}";
+    addMenuStr += "if(`menu -exists prRigTools`){deleteUI prRigTools;}menu -label \"prRigTools\"-parent MayaWindow prRigTools;menuItem -divider 1 -dividerLabel \"Deform\"; menuItem -label \"Squash Deformer\"-annotation \"Select object(s) to squash\"-command \"prSquash; \";menuItem -divider 1 -dividerLabel \"Vector Constraint\";menuItem -label \"Vector constraint\"-annotation \"Select a curve\"-command \"prSkirtRig(); \";     menuItem - divider 1 - dividerLabel \"Rope Rig\";menuItem -label \"Rope Rig\"-annotation \"Select two curves\"-command \"prRopeRigUI(); \";menuItem -divider 1 -dividerLabel      menuItem -divider 1 -dividerLabel \"Yaw,Pitch,Roll/pairBlend\";    menuItem -label \"pairBlend\"-annotation \"pr pairBlend->select one joint->add yaw / pitch / roll, Two joints->pairBlend\"-command \"prPairBlend; \";     menuItem -label \"addSupportJoints\"-annotation \"pr supportJnts->select one joint->add blend & support Joints\"-command \"prSupportJnts; \";     menuItem -label \"addSimpleSupportJoints\"-annotation \"pr simpleSupportJnts->select one joint->add blend & support Joints\"-command \"prSimpleSupportJnts; \";";
     addMenuStr += "menuItem - label \"addMirrorJoints\"-annotation \"pr mirrorSupportJnts->select one joint->add mirror Joints\"-command \"prMirrorSupportJnts; \";";
-    addMenuStr += "menuItem -divider 1 ; menuItem -subMenu true -label \"Help\";menuItem -label \"prSquash Deformer\" -command $prSquashUrl;menuItem -label \"prVector Constraint\" -command $prVectorUrl;menuItem -label \"prPairBlend\" -command $prPairBlendUrl;";
+    addMenuStr += "menuItem -divider 1 ; menuItem -subMenu true -label \"Help\";menuItem -label \"prSquash Deformer\" -command $prSquashUrl;menuItem -label \"prVector Constraint\" -command $prVectorUrl;menuItem -label \"prPairBlend\" -command $prPairBlendUrl;menuItem -label \"prRoperig\" -command $prRopeRigUrl;";
     addMenuStr += "menuItem -label \"About\" -command \"prAbout();\";setParent - menu ..; ";
     addMenuStr += "setParent - menu prRigTools; menuSet - addMenu prRigTools modelingMenuSet; menuSet - addMenu prRigTools riggingMenuSet; menuSet - addMenu prRigTools animationMenuSet; ";
     MGlobal::executeCommand(addMenuStr, false, false);
@@ -274,19 +299,34 @@ MStatus uninitializePlugin(MObject obj)
     CHECK_MSTATUS_AND_RETURN_IT(status);
 
 
-    
+
     status = fnPlugin.deregisterCommand(prSquashCmd::CommandName());
     if (!status)
     {
         MGlobal::displayError("Failed to deregister command: " + prSquashCmd::CommandName());
         return(status);
     }
-    
+
 
     status = fnPlugin.deregisterNode(prSquash::GetTypeId());
     if (!status)
     {
         MGlobal::displayError("Failed to deregister node: " + prSquash::GetTypeName() + "\n");
+        return(status);
+    }
+
+
+    status = fnPlugin.deregisterCommand(prRopeRigCmd::CommandName());
+    if (!status)
+    {
+        MGlobal::displayError("Failed to deregister command: " + prRopeRigCmd::CommandName());
+        return(status);
+    }
+
+    status = fnPlugin.deregisterNode(prRopeRig::GetTypeId());
+    if (!status)
+    {
+        MGlobal::displayError("Failed to deregister node: " + prRopeRig::GetTypeName());
         return(status);
     }
 
