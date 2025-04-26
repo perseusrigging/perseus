@@ -1168,4 +1168,3 @@ MString prRopeRig::GetTypeName()
 {
     return(TYPE_NAME);
 }
-

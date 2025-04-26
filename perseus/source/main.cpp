@@ -191,7 +191,7 @@ MStatus initializePlugin(MObject obj)
     about += "OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,\\n";
     about += "ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE\\n";
     about += "OR OTHER DEALINGS IN THE SOFTWARE.\\n\\n";
-    about += "Copyright(c) 2017 - 2023 Mohammad Jafarian\\n";
+    about += "Copyright(c) 2017 - 2025 Mohammad Jafarian\\n";
     about += "email : contact@perseusrigging.com\\n";
     MString prSquashUrl = "string $prSquashUrl = \"system( \\\"start explorer /n,/e, http://www.perseusrigging.com//prsquash\\\")\";";
     prSquashUrl += "string $prVectorUrl = \"system( \\\"start explorer /n,/e, http://www.perseusrigging.com//prvectorConstraint\\\")\";";
