@@ -13,6 +13,9 @@ prPairBlend
 https://perseusrigging.com/prpairblend/  
 The prPairBlend plugin is a tool that is developed for Maya and designed to address the challenges of using rotation values as drivers for blendshape targets or set-driven keys in Maya. Unlike translation parameters, rotation values are interdependent, making it difficult to achieve consistent results when manipulating rotations. The prPairBlend plugin provides a solution by offering a node that takes rotation values and rotation order as inputs and outputs Euler angle rotations with a locked twist and blends attribute-controlled angled weight. This simplifies the process of managing rotations and allows for precise control.
 
+prRopeRig
+https://perseusrigging.com/prroperig/
+prRopeRig is a custom Maya plugin developed in C++ to help riggers and animators create dynamic rope- or tail-like structures with more flexibility and control than Maya’s native Spline IK. Designed with real production needs in mind, this tool streamlines the rigging process by reducing node clutter and providing features like squash/stretch, twist, bulge, jiggle, collision, and motion path-like behavior—all controllable via a centralized helper node.
 
 Mohammad Jafarian  
 contact@perseusrigging.com
