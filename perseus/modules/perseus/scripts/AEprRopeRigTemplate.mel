@@ -1,0 +1,10 @@
+global proc AEprRopeRigTemplate( string $nodeName )
+{
+    //editorTemplate -beginScrollLayout;
+    editorTemplate -beginLayout "Deformer Attributes" -collapse 0;
+AEaddRampControl( $nodeName + ".springRamp" );
+AEaddRampControl( $nodeName + ".expandRamp" );
+AEaddRampControl( $nodeName + ".shrinkRamp" );
+AEaddRampControl( $nodeName + ".bulgeRamp" );
+        editorTemplate -endLayout;
+}
