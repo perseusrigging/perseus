@@ -17,7 +17,6 @@
 #include "prRopeRig.h"
 #include "prRopeRigCmd.h"
 
-
 MString nodeVersion("1.0.2");
 
 MStatus initializePlugin(MObject obj)
